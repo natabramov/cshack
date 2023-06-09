@@ -50,5 +50,22 @@ int main(int argc, char* argv[])
             }
         }
     }
+    STARTUPINFOA si{};
+    si.cb = sizeof(STARTUPINFOA);
+    PROCESS_INFORMATION pi{};
+
+    char name[] = "C:\\Users\\Natalie\\cshack\\cshack\\cshack\\test.txt";
+    CreateProcessA("C:\\Windows\\system32\\Notepad.exe",
+        name,                 
+        NULL,                      
+        NULL,                      
+        FALSE,                    
+        0,                         
+        NULL,                      
+        NULL,                      
+        &si,                       
+        &pi);
+    
+
     return 0;
 }
