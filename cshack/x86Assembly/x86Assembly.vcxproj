@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8b418e4e-da4d-42be-8772-4e025f941cc1}</ProjectGuid>
-    <RootNamespace>cshack</RootNamespace>
+    <ProjectGuid>{a6ea2982-04f3-4568-ad9e-b19dd5d6117d}</ProjectGuid>
+    <RootNamespace>x86Assembly</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
