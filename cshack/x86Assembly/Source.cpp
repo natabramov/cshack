@@ -32,11 +32,30 @@ __declspec(naked) int FlipSign(int number)
     }
 }
 
+// Calls the MessageBoxA function in the Windows API
 __declspec(naked) void CallMessageBoxA(HWND hwnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType)
 {
     __asm
     {
 
+    }
+}
+
+// Returns the reversed hardcoded string
+// Output: "elloH"
+__declspec(naked) char* ReverseStringHardcoded()
+{
+    __asm
+    {
+        ret
+
+        hardcoded_string:
+            _emit 'H'
+            _emit 'e'
+            _emit 'l'
+            _emit 'l'
+            _emit 'o'
+            _emit '\0'
     }
 }
 
