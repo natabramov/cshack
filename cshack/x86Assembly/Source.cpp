@@ -96,7 +96,7 @@ __declspec(naked) void ReverseString(char* string)
         mov eax, string //move string into eax
 
         length_loop:
-            mov edx, [string + ebx]
+            mov edx, [string + ebx] //test
             cmp [eax+ebx], 0
             jz reverse_string
             inc ebx
