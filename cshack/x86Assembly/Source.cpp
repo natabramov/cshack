@@ -2,6 +2,8 @@
 
 #include <cstdio>
 
+#include <string>
+
 __declspec(naked) int Multiply(int first, int second)
 {
     __asm
@@ -28,6 +30,14 @@ __declspec(naked) int FlipSign(int number)
 {
     __asm
     {
+        push ebp
+        mov ebp, esp
+
+        mov eax, [ebp+0x8]
+        neg eax
+
+        mov esp, ebp
+        pop ebp
         ret
     }
 }
@@ -37,12 +47,25 @@ __declspec(naked) void CallMessageBoxA(HWND hwnd, LPCSTR lpText, LPCSTR lpCaptio
 {
     __asm
     {
+        push ebp
+        mov ebp, esp
 
+        push [ebp+0x14] //uType
+        push [ebp+0x10] //lpCaption
+        push [ebp+0xC]  //lpText
+        push [ebp+0x8] //hwnd
+
+        mov eax, MessageBoxA
+        call eax
+
+        mov esp, ebp
+        pop ebp
+        ret
     }
 }
 
 // Returns the reversed hardcoded string
-// Output: "elloH"
+// Output: "olleH"
 __declspec(naked) char* ReverseStringHardcoded()
 {
     __asm
@@ -65,13 +88,37 @@ __declspec(naked) void ReverseString(char* string)
 {
     __asm
     {
+        push ebp
+        mov ebp, esp
 
+        mov ebx, 0 //length
+
+        mov eax, string //move string into eax
+
+        length_loop:
+            mov edx, [string + ebx]
+            cmp [eax+ebx], 0
+            jz reverse_string
+            inc ebx
+            loop length_loop
+
+        reverse_string:
+            mov ecx, 1 //placeholder
+
+        mov esp, ebp
+        pop ebp
+        ret
     }
 }
 
 int main(int argc, char* argv[])
 {
     printf("7 x 3 = %i\n", Multiply(7, 3));
+    printf("5 Flipped is %i\n", FlipSign(5));
+    //CallMessageBoxA(nullptr, "Hello", "Caption", MB_YESNO);
+    char hello[] = {'h','e','l','l','o'};
+    
+    ReverseString(hello);
 
     return 0;
 }
