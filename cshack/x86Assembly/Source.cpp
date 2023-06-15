@@ -70,6 +70,14 @@ __declspec(naked) char* ReverseStringHardcoded()
 {
     __asm
     {
+        push ebp
+        mov ebp, esp
+
+        mov eax, hardcoded_string
+        mov ebx, 1
+
+        mov esp, ebp
+        pop ebp
         ret
 
         hardcoded_string:
@@ -96,14 +104,15 @@ __declspec(naked) void ReverseString(char* string)
         mov eax, string //move string into eax
 
         length_loop:
-            mov edx, [eax + ebx]
-            cmp [eax+ebx], 0
-            jz reverse_string
-            inc ebx
-            loop length_loop
+            mov cl, [eax]   //move one letter
+            cmp cl, 0       //see if letter is null terminator
+            je reverse_string
+            inc eax     //next letter
+            inc ebx     //increment length
+            jmp length_loop
 
         reverse_string:
-            mov ecx, 1 //placeholder
+            mov ecx, ebx //placeholder
 
         mov esp, ebp
         pop ebp
@@ -116,9 +125,10 @@ int main(int argc, char* argv[])
     printf("7 x 3 = %i\n", Multiply(7, 3));
     printf("5 Flipped is %i\n", FlipSign(5));
     //CallMessageBoxA(nullptr, "Hello", "Caption", MB_YESNO);
-    char hello[] = {'h','e','l','l','o'};
+    char str[] = {'h','e','l','l','o'};
     
-    ReverseString(hello);
+    ReverseString(str);
+    ReverseStringHardcoded();
 
     return 0;
 }
