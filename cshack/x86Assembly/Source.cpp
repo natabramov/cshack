@@ -112,13 +112,14 @@ __declspec(naked) void ReverseString(char* string)
             jmp length_loop
 
         reverse_string:
-            mov ch, cl //save the null terminator
+            //mov ch, cl //save the null terminator
             mov eax, string
 
         lp:
-            mov dh, [eax]   //move beginning of string to bl
-            mov [eax], dl   //move end of string to beginning of string
-            mov dl, [eax + ebx] //move end of string to al
+            mov ecx, [eax]   //move beginning of string to bl
+            mov edx, [eax+ebx]   //move end of string to edx
+            mov [eax], edx      //end of string -> [eax]
+            mov [eax+ebx], ecx //move end of string to al
             inc eax     //increase start pointer
             dec ebx     //decrease end length pointer
             cmp ebx, 0
@@ -131,6 +132,25 @@ __declspec(naked) void ReverseString(char* string)
             ret
     }
 }
+
+//char str[] = "hello";
+//
+//int end = strlen(str) - 1;
+//for (int start = 0; start <= end; start++, end--)
+//{
+//    char temp = str[start];
+//    str[start] = str[end];
+//    str[end] = temp;
+//}
+
+//eax = start
+//ebx = end
+//ecx = temp
+
+//mov eax, str; Moves in address of str
+//mov ebx, [eax]; Moves 'H' to ebx
+//inc eax; Increments to next address
+//mov ebx, [eax]; Moves 'e' to ebx
 
 int main(int argc, char* argv[])
 {
