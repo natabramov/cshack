@@ -113,18 +113,18 @@ __declspec(naked) void ReverseString(char* string)
 
         reverse_string:
             mov eax, string
+            dec ebx
             xor esi, esi
 
         lp:
-            mov cl, byte ptr[eax]   //move beginning of string to bl
-            mov dl, byte ptr[eax + ebx]   //move end of string to edx
-            mov byte ptr[eax], dl      //end of string -> [eax]
-            mov byte ptr[eax + ebx], cl //move end of string to al
+            mov cl, byte ptr[eax + esi]   
+            mov dl, byte ptr[eax + ebx]   
+            mov byte ptr[eax + esi], dl     
+            mov byte ptr[eax + ebx], cl
             inc esi     //increase start pointer
             dec ebx     //decrease end length pointer
             cmp esi, ebx
-            jg end
-            jmp lp
+            jle lp
 
         end:
             mov esp, ebp
