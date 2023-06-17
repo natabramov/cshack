@@ -112,19 +112,19 @@ __declspec(naked) void ReverseString(char* string)
             jmp length_loop
 
         reverse_string:
-            //mov ch, cl //save the null terminator
             mov eax, string
+            xor esi, esi
 
         lp:
-            mov ecx, [eax]   //move beginning of string to bl
-            mov edx, [eax+ebx]   //move end of string to edx
-            mov [eax], edx      //end of string -> [eax]
-            mov [eax+ebx], ecx //move end of string to al
-            inc eax     //increase start pointer
+            mov cl, byte ptr[eax]   //move beginning of string to bl
+            mov dl, byte ptr[eax + ebx]   //move end of string to edx
+            mov byte ptr[eax], dl      //end of string -> [eax]
+            mov byte ptr[eax + ebx], cl //move end of string to al
+            inc esi     //increase start pointer
             dec ebx     //decrease end length pointer
-            cmp ebx, 0
-            jg lp   //jump if length still greater than 0
-            jmp end //end when length pointer is 0
+            cmp esi, ebx
+            jg end
+            jmp lp
 
         end:
             mov esp, ebp
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
     printf("7 x 3 = %i\n", Multiply(7, 3));
     printf("5 Flipped is %i\n", FlipSign(5));
     //CallMessageBoxA(nullptr, "Hello", "Caption", MB_YESNO);
-    char str[] = {'h','E','L','l','o','b','b','\0'};
+    char str[] = {'a','b','c','d','e','f','g','\0'};
     
     ReverseString(str);
     //CReverseString(str);
