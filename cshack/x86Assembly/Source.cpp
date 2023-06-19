@@ -73,8 +73,37 @@ __declspec(naked) char* ReverseStringHardcoded()
         push ebp
         mov ebp, esp
 
-        mov eax, hardcoded_string
-        mov ebx, 1
+        mov eax, 6
+        call malloc //points to eax ?
+        mov ecx, hardcoded_string
+        mov [eax], ecx   //write string into memory
+        mov ebx, 0  //length
+
+        length_loop:
+            mov dl, [eax]           //move one letter
+            cmp dl, 0               //see if letter is null terminator
+            je reverse_string
+            inc eax                 //next letter
+            inc ebx                 //increment length
+            jmp length_loop
+
+        reverse_string :
+            mov eax, hardcoded_string
+            dec ebx
+            xor esi, esi
+
+        lp :
+            mov cl, byte ptr[eax + esi] // char temp = str[start]
+                mov dl, byte ptr[eax + ebx] // vvvvvvvvvvvvvvvvvvvvv
+                mov byte ptr[eax + esi], dl // str[start] = str[end]
+                mov byte ptr[eax + ebx], cl // str[end] = str[start]
+                inc esi                     // start++
+                dec ebx                     // end--
+                cmp esi, ebx                // start <= end ?
+                jle lp                      // No, continue looping
+
+        mov edx, [eax]  //read string back from memory
+        mov eax, edx    //copy into return value register
 
         mov esp, ebp
         pop ebp
@@ -104,11 +133,11 @@ __declspec(naked) void ReverseString(char* string)
         mov eax, string //move string into eax
 
         length_loop:
-            mov cl, [eax]   //move one letter
-            cmp cl, 0       //see if letter is null terminator
+            mov cl, [eax]           //move one letter
+            cmp cl, 0               //see if letter is null terminator
             je reverse_string
-            inc eax     //next letter
-            inc ebx     //increment length
+            inc eax                 //next letter
+            inc ebx                 //increment length
             jmp length_loop
 
         reverse_string:
@@ -117,14 +146,14 @@ __declspec(naked) void ReverseString(char* string)
             xor esi, esi
 
         lp:
-            mov cl, byte ptr[eax + esi]   
-            mov dl, byte ptr[eax + ebx]   
-            mov byte ptr[eax + esi], dl     
-            mov byte ptr[eax + ebx], cl
-            inc esi     //increase start pointer
-            dec ebx     //decrease end length pointer
-            cmp esi, ebx
-            jle lp
+            mov cl, byte ptr[eax + esi] // char temp = str[start]
+            mov dl, byte ptr[eax + ebx] // vvvvvvvvvvvvvvvvvvvvv
+            mov byte ptr[eax + esi], dl // str[start] = str[end]
+            mov byte ptr[eax + ebx], cl // str[end] = str[start]
+            inc esi                     // start++
+            dec ebx                     // end--
+            cmp esi, ebx                // start <= end ?
+            jle lp                      // No, continue looping
 
         end:
             mov esp, ebp
@@ -132,20 +161,6 @@ __declspec(naked) void ReverseString(char* string)
             ret
     }
 }
-
-//char str[] = "hello";
-//
-//int end = strlen(str) - 1;
-//for (int start = 0; start <= end; start++, end--)
-//{
-//    char temp = str[start];
-//    str[start] = str[end];
-//    str[end] = temp;
-//}
-
-//eax = start
-//ebx = end
-//ecx = temp
 
 //mov eax, str; Moves in address of str
 //mov ebx, [eax]; Moves 'H' to ebx
@@ -160,7 +175,6 @@ int main(int argc, char* argv[])
     char str[] = {'a','b','c','d','e','f','g','\0'};
     
     ReverseString(str);
-    //CReverseString(str);
     printf(str);
     ReverseStringHardcoded();
 
