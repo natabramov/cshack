@@ -73,37 +73,30 @@ __declspec(naked) char* ReverseStringHardcoded()
         push ebp
         mov ebp, esp
 
-        mov eax, 6
-        call malloc //points to eax ?
-        mov ecx, hardcoded_string
-        mov [eax], ecx   //write string into memory
         mov ebx, 0  //length
+        mov eax, hardcoded_string
 
         length_loop:
-            mov dl, [eax]           //move one letter
-            cmp dl, 0               //see if letter is null terminator
-            je reverse_string
-            inc eax                 //next letter
+            mov cl, [eax]           //move one letter
             inc ebx                 //increment length
+            cmp cl, 0               //see if letter is null terminator
+            je setup
+            inc eax                 //next letter
             jmp length_loop
+        
+        setup:
+            push ebx
+            call malloc
+            mov ecx, hardcoded_string
 
-        reverse_string :
-            mov eax, hardcoded_string
+        move_loop:
+            mov dl, byte ptr [ecx+ebx]   //write string into memory one byte at a time
+            mov [eax], dl
+            inc eax
             dec ebx
-            xor esi, esi
-
-        lp :
-            mov cl, byte ptr[eax + esi] // char temp = str[start]
-                mov dl, byte ptr[eax + ebx] // vvvvvvvvvvvvvvvvvvvvv
-                mov byte ptr[eax + esi], dl // str[start] = str[end]
-                mov byte ptr[eax + ebx], cl // str[end] = str[start]
-                inc esi                     // start++
-                dec ebx                     // end--
-                cmp esi, ebx                // start <= end ?
-                jle lp                      // No, continue looping
-
-        mov edx, [eax]  //read string back from memory
-        mov eax, edx    //copy into return value register
+            cmp ebx, 0
+            mov [eax], 0
+            jne move_loop
 
         mov esp, ebp
         pop ebp
@@ -155,10 +148,9 @@ __declspec(naked) void ReverseString(char* string)
             cmp esi, ebx                // start <= end ?
             jle lp                      // No, continue looping
 
-        end:
-            mov esp, ebp
-            pop ebp
-            ret
+        mov esp, ebp
+        pop ebp
+        ret
     }
 }
 
