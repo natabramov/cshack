@@ -88,9 +88,11 @@ __declspec(naked) char* ReverseStringHardcoded()
             push ebx
             call malloc
             mov ecx, hardcoded_string
+            dec ebx
+            mov esi, eax
 
         move_loop:
-            mov dl, byte ptr [ecx+ebx]   //write string into memory one byte at a time
+            mov dl, byte ptr [ecx+ebx-1]   //write string into memory one byte at a time
             mov [eax], dl
             inc eax
             dec ebx
@@ -98,6 +100,7 @@ __declspec(naked) char* ReverseStringHardcoded()
             mov [eax], 0
             jne move_loop
 
+        mov eax, esi
         mov esp, ebp
         pop ebp
         ret
@@ -168,7 +171,7 @@ int main(int argc, char* argv[])
     
     ReverseString(str);
     printf(str);
-    ReverseStringHardcoded();
-
+    char*q = ReverseStringHardcoded();
+    printf("\n%s",q);
     return 0;
 }
