@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Processes.cpp">
+    <ClCompile Include="cshack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fileopener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
