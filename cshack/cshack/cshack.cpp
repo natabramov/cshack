@@ -20,8 +20,13 @@ BOOL ListProcessModules(DWORD dwPID) {
 
 	do
 	{
-		if (me32.szModule == "client.dll") {
-			_tprintf(TEXT("\n\n     MODULE NAME:     %s"), me32.szModule);
+		if (strncmp(me32.szModule, "client.dll", sizeof(me32.szModule)) == 0) {
+			HANDLE hClient = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, NULL, me32.th32ProcessID);
+			unsigned char newBytes[] = { 0x39, 0xD2, 0x90 }; 
+			BOOL bProcess = WriteProcessMemory(hClient, (char*)me32.modBaseAddr + 0x1D1384, newBytes, sizeof(newBytes), NULL);
+			if (bProcess == 0) {
+				_tprintf(TEXT("\n\n     MODULE NAME FAILED:     %s"), me32.szModule);
+			}
 		}
 		_tprintf(TEXT("\n\n     MODULE NAME:     %s"), me32.szModule);
 		_tprintf(TEXT("\n     executable     = %s"), me32.szExePath);
@@ -41,6 +46,6 @@ BOOL ListProcessModules(DWORD dwPID) {
 }
 
 int main(int argc, char* argv[]) {
-	ListProcessModules(4764); //need to find this using method
+	ListProcessModules(19644); //need to find this using method
 	return 0;
 }
