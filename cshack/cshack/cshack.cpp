@@ -11,7 +11,7 @@ BOOL ListProcessModules(DWORD dwPID) {
 	me32.dwSize = sizeof(MODULEENTRY32);
 	if (!Module32First(hModuleSnap, &me32))
 	{
-		CloseHandle(hModuleSnap);     // Must clean up the snapshot object! 
+		CloseHandle(hModuleSnap);
 		return(FALSE);
 	}
 
@@ -28,7 +28,6 @@ BOOL ListProcessModules(DWORD dwPID) {
 
 	_tprintf(TEXT("\n"));
 
-	//  Do not forget to clean up the snapshot object. 
 	CloseHandle(hModuleSnap);
 	return TRUE;
 }
@@ -69,8 +68,8 @@ CHAR* GetDllBaseAddressInProcess(DWORD processId) {
 	me32.dwSize = sizeof(MODULEENTRY32);
 	if (!Module32First(hModuleSnap, &me32))
 	{
-		CloseHandle(hModuleSnap);     // Must clean up the snapshot object! 
-		return(FALSE);
+		CloseHandle(hModuleSnap);
+		return FALSE;
 	}
 
 	do
@@ -87,13 +86,43 @@ CHAR* GetDllBaseAddressInProcess(DWORD processId) {
 	return 0;
 }
 
+CHAR* SaveOldInstructionBytes(DWORD processId, char* instructionAddress, char* oldInstructions) {
+	return 0;
+}
+
+BOOL EnableWallhack(DWORD processId, char* instructionAddress) {
+
+}
+
+BOOL DisableWallhack(DWORD processId, char* instructionAddress, char* oldInstructions) {
+
+}
+
 int main(int argc, char* argv[]) {
 	DWORD processId = GetProcessIdFromName("csgo.exe");
-	//char* dllBaseAddress = GetDllBaseAddressInProcess(processId);
+	char* dllBaseAddress = GetDllBaseAddressInProcess(processId); //works i think but only with everything else
+	char* instructionAddress = dllBaseAddress + 0x1D1384;
+	char oldInstructions[8] = { 0 };
+	SaveOldInstructionBytes(processId, instructionAddress, oldInstructions);
+	/*
+	oldInstructions = SaveOldInstructionBytes(processId, instructionAddress, oldInstructions); ??
+	*/
+	int HOTKEY_ENABLE = VK_INSERT;
+	int HOTKEY_DISABLE = VK_DELETE;
+	while (true) {
+		if (GetAsyncKeyState(HOTKEY_ENABLE)) {
+			EnableWallhack(processId, instructionAddress);
+		}
+		else if (GetAsyncKeyState(HOTKEY_DISABLE)) {
+			DisableWallhack(processId, instructionAddress, oldInstructions);
+		}
+	}
+
 	ListProcessModules(processId);
 
 	/*
 	* DWORD processId = GetProcessIdFromName("csgo.exe");
+	* char* dllBaseAddress = GetDllBaseAddressInProcess(processId);
 	* char* dllBaseAddress = GetDllBaseAddressInProcess(processId);
 	* char* instructionAddress = dllBaseAddress + [RVA]
 	* char oldInstructions[8] = {0};
